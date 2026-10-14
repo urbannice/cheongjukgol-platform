@@ -1,0 +1,157 @@
+@import "tailwindcss";
+
+:root {
+  /* 청죽골연합회 브랜드 컬러 — 아래 6가지 값만 바꾸면 사이트 전체 색상이 한 번에 바뀝니다. */
+  --color-primary: #093624; /* Bottle Green — 로고, 주요 제목, 네비게이션, 본문 핵심 텍스트, 주요 버튼 */
+  --color-secondary: #568203; /* Avocado Green — 보조 텍스트, 서브 그래픽, hover, 자연 요소 */
+  --color-point: #cbda46; /* Wattle — 새싹·작은 아이콘·숫자·카테고리 라벨 등 포인트 전용. 넓은 면적 사용 금지 */
+  --color-highlight: #fff8b9; /* Lemon Chiffon — 따뜻한 강조 배경, 일부 섹션 배경 */
+  --color-ivory: #faf9f4; /* Warm Ivory — 사이트 전체 기본 배경 */
+  --color-white: #ffffff;
+
+  /* 기존 화면 곳곳에서 쓰는 변수명은 그대로 두고, 위 브랜드 컬러에 연결만 새로 합니다.
+     (화면 코드를 일일이 고치지 않아도 색만 통일되게 바뀝니다) */
+  --color-bg: var(--color-white);
+  --color-bg-warm: var(--color-ivory);
+  --color-surface: #eef0e3; /* 사진이 아직 없을 때 보이는 옅은 배경 */
+  --color-text: var(--color-primary);
+  --color-text-muted: #5c6b5e;
+  --color-border: #e7e4d6;
+  --color-primary-dark: #052017;
+  --color-accent: var(--color-secondary);
+  --color-accent-dark: #43650a;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-point: var(--color-point);
+  --color-highlight: var(--color-highlight);
+  --color-ivory: var(--color-ivory);
+  --color-white: var(--color-white);
+  --color-bg: var(--color-bg);
+  --color-bg-warm: var(--color-bg-warm);
+  --color-surface: var(--color-surface);
+  --color-text: var(--color-text);
+  --color-text-muted: var(--color-text-muted);
+  --color-border: var(--color-border);
+  --color-primary-dark: var(--color-primary-dark);
+  --color-accent: var(--color-accent);
+  --color-accent-dark: var(--color-accent-dark);
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+.container-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  transition: border-color 0.15s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--color-primary);
+}
+
+.card {
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: var(--color-bg);
+}
+.input:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.section-label {
+  /* 화면 폭에 따라 13px~15px 사이에서 부드럽게 커집니다.
+     모바일/태블릿/PC 사이에 크기가 툭 튀지 않고 자연스럽게 이어지도록
+     고정 크기 대신 화면 폭 기준으로 계산합니다. */
+  font-size: clamp(13px, 0.6vw + 11.5px, 15px);
+  font-weight: 600;
+  color: var(--color-primary);
+  letter-spacing: 0.04em;
+}
+
+/* 활동 카드에 붙는 작은 분류 라벨 — Wattle을 배경에 살짝만 써서 포인트로만 보이게 합니다. */
+.category-label {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-point) 35%, var(--color-white));
+  color: var(--color-primary);
+}
+
+/* 16:9 반응형 영상 컨테이너 — 세로 영상도 화면 안에서 자연스럽게 보이도록 처리 */
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.video-frame iframe,
+.video-frame video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.video-frame.portrait {
+  aspect-ratio: 9 / 16;
+  max-width: 380px;
+  margin: 0 auto;
+}
