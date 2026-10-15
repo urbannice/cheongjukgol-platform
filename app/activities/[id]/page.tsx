@@ -8,6 +8,12 @@ import GalleryLightbox from "@/components/GalleryLightbox";
 
 export const revalidate = 60;
 
+// 활동 페이지는 처음 방문할 때 한 번 만들어 저장해 두고, 60초마다 새 내용으로 갱신합니다.
+// (빈 목록을 돌려주면 배포할 때 미리 만들지 않고, 방문할 때 만들어 저장합니다)
+export function generateStaticParams() {
+  return [];
+}
+
 // 링크를 공유했을 때 미리보기에 활동 제목이 보이도록 제목·설명을 정합니다.
 // (미리보기 사진은 같은 폴더의 opengraph-image.tsx가 만듭니다)
 export async function generateMetadata({

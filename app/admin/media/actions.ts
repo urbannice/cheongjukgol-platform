@@ -78,8 +78,10 @@ export async function addMediaAssetAction(input: {
   if (input.schoolId) {
     revalidatePath(`/admin/schools/${input.schoolId}`);
     revalidatePath("/schools");
+    revalidatePath("/schools/[slug]", "page");
   }
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
   return data;
 }
 
@@ -99,7 +101,9 @@ export async function reorderMediaAssetsAction(orderedIds: string[]) {
     detail: "사진 순서 변경",
   });
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
 }
 
 export async function updateMediaVisibilityAction(id: string, visibility: MediaVisibility) {
@@ -117,6 +121,7 @@ export async function updateMediaVisibilityAction(id: string, visibility: MediaV
   });
   if (data?.activity_id) revalidatePath(`/admin/activities/${data.activity_id}`);
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
 }
 
 export async function softDeleteMediaAction(id: string) {
@@ -136,8 +141,10 @@ export async function softDeleteMediaAction(id: string) {
   if (data?.school_id) {
     revalidatePath(`/admin/schools/${data.school_id}`);
     revalidatePath("/schools");
+    revalidatePath("/schools/[slug]", "page");
   }
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
 }
 
 export async function restoreMediaAction(id: string) {

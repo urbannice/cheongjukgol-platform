@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
-import Link from "next/link";
+import { Suspense } from "react";
 import {
   findCurrentSlugFromHistory,
-  getActivityYears,
   getSchoolActivities,
   getSchoolBySlug,
   getSchoolMedia,
@@ -12,6 +11,7 @@ import { buildMapSearchUrl } from "@/lib/maps";
 import { getSiteSettings } from "@/lib/siteSettings";
 import { SCHOOL_CONTACT_LINK_LABEL } from "@/lib/types";
 import GalleryLightbox from "@/components/GalleryLightbox";
+import { SchoolActivityList, SchoolActivityListFromUrl } from "@/components/SchoolActivityList";
 
 // 링크를 공유했을 때 미리보기에 학교 이름과 한줄 소개가 보이도록 제목·설명을 정합니다.
 // (미리보기 사진은 같은 폴더의 opengraph-image.tsx가 만듭니다)
@@ -28,16 +28,17 @@ export async function generateMetadata({
   return { title, description, openGraph: { title, description } };
 }
 
-export default async function SchoolDetailPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ year?: string }>;
-}) {
+// 학교 페이지는 처음 방문할 때 한 번 만들어 저장해 두고, 60초마다 새 내용으로 갱신합니다.
+// (빈 목록을 돌려주면 배포할 때 미리 만들지 않고, 방문할 때 만들어 저장합니다)
+export const revalidate = 60;
+
+export function generateStaticParams() {
+  return [];
+}
+
+export default async function SchoolDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const { year } = await searchParams;
-  let school = await getSchoolBySlug(slug);
+  const school = await getSchoolBySlug(slug);
 
   if (!school) {
     const newSlug = await findCurrentSlugFromHistory(slug);
@@ -45,16 +46,17 @@ export default async function SchoolDetailPage({
     notFound();
   }
 
-  const years = await getActivityYears({ type: "school", schoolId: school.id });
-  // 활동 기록이 쌓인 학교에서만 연도 필터를 보여줍니다.
-  // 활동이 적은 학교(연도가 하나뿐이거나 없음)는 필터 없이 그대로 보여줘 썰렁해 보이지 않게 합니다.
-  const showYearFilter = years.length > 1;
-  const selectedYear = showYearFilter && year && years.includes(year) ? year : undefined;
-
+  // 연도별로 보기는 화면 안에서 처리하므로, 이 학교의 공개 활동을 한 번에 가져옵니다.
   const [activities, media] = await Promise.all([
-    getSchoolActivities(school.id, 12, selectedYear),
+    getSchoolActivities(school.id, 300),
     getSchoolMedia(school.id),
   ]);
+  const activityItems = activities.map((a) => ({
+    id: a.id,
+    title: a.title,
+    activity_date: a.activity_date,
+    cover_image_url: a.cover_image_url,
+  }));
 
   const addressText =
     school.address_visibility === "full"
@@ -178,71 +180,10 @@ export default async function SchoolDetailPage({
           </div>
         )}
 
-        {/* 7. 최근 활동 */}
-        {(activities.length > 0 || showYearFilter) && (
-          <div className="mt-14">
-            <div className="flex items-center justify-between gap-3 mb-4 flex-wrap">
-              <p className="font-semibold">활동 기록</p>
-              {showYearFilter && (
-                <div className="flex flex-wrap gap-2">
-                  <Link
-                    href={`/schools/${slug}`}
-                    className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                      !selectedYear
-                        ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
-                        : "border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-secondary)]"
-                    }`}
-                  >
-                    전체 연도
-                  </Link>
-                  {years.map((y) => (
-                    <Link
-                      key={y}
-                      href={`/schools/${slug}?year=${y}`}
-                      className={`px-3 py-1.5 rounded-full text-xs border transition-colors ${
-                        selectedYear === y
-                          ? "bg-[var(--color-primary)] text-white border-[var(--color-primary)]"
-                          : "border-[var(--color-border)] text-[var(--color-text-muted)] hover:border-[var(--color-secondary)]"
-                      }`}
-                    >
-                      {y}년
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-            {activities.length === 0 ? (
-              <p className="text-sm text-[var(--color-text-muted)]">
-                선택한 연도에 등록된 활동이 없습니다.
-              </p>
-            ) : (
-            <div className="flex gap-4 overflow-x-auto pb-2">
-              {activities.map((a) => (
-                <Link
-                  key={a.id}
-                  href={`/activities/${a.id}`}
-                  className="card min-w-[180px] w-[180px] flex-shrink-0"
-                >
-                  <div className="aspect-[4/3] bg-[var(--color-surface)] overflow-hidden">
-                    {a.cover_image_url && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={a.cover_image_url}
-                        alt={a.title}
-                        loading="lazy"
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="p-3">
-                    <p className="text-sm font-medium line-clamp-2">{a.title}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            )}
-          </div>
-        )}
+        {/* 7. 최근 활동 (연도 필터는 화면 안에서 처리합니다) */}
+        <Suspense fallback={<SchoolActivityList slug={school.slug} activities={activityItems} year={null} />}>
+          <SchoolActivityListFromUrl slug={school.slug} activities={activityItems} />
+        </Suspense>
 
         {/* 8. 활동 갤러리 / 영상 / 자료 */}
         {media.filter((m) => m.media_type === "image" && m.url).length > 0 && (
