@@ -50,6 +50,16 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
+  /* 한글이 줄 끝에서 "성 / 장합니다"처럼 낱말 중간에서 끊기지 않도록 띄어쓰기 단위로만 줄을 바꿉니다.
+     띄어쓰기 없이 아주 긴 글자(주소 등)는 화면 밖으로 넘치지 않도록 필요할 때만 끊습니다. */
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
+/* 큰 제목은 줄마다 글자 수가 비슷하도록 나눠서, 마지막 줄에 한두 낱말만 남지 않게 합니다. */
+h1,
+h2 {
+  text-wrap: balance;
 }
 
 .container-page {
