@@ -67,15 +67,15 @@ export default async function SchoolDetailPage({
 
   return (
     <div>
-      {/* 1. 대표이미지 / 학교명 / 한 줄 소개 */}
-      <div className="aspect-[16/9] sm:aspect-[21/9] bg-[var(--color-surface)]">
-        {school.hero_image_url && (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={school.hero_image_url} alt={school.name} className="w-full h-full object-cover" />
-        )}
-      </div>
-
       <div className="container-page py-10 sm:py-14 max-w-3xl">
+        {/* 1. 대표이미지 / 학교명 / 한 줄 소개 */}
+        {/* 대표이미지는 화면 가로를 꽉 채우면 PC에서 너무 크게 보여, 본문 폭에 맞춘 카드 모양으로 보여줍니다. */}
+        {school.hero_image_url && (
+          <div className="mb-8 aspect-[16/9] rounded-[20px] overflow-hidden bg-[var(--color-surface)]">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={school.hero_image_url} alt={school.name} className="w-full h-full object-cover" />
+          </div>
+        )}
         <h1 className="text-2xl sm:text-3xl font-bold">{school.name}</h1>
         {school.short_description && (
           <p className="mt-3 text-lg text-[var(--color-text-muted)]">{school.short_description}</p>
