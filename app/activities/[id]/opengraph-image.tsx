@@ -17,15 +17,15 @@ export default async function Image({ params }: { params: Promise<{ id: string }
     (await toBackgroundPng(result?.activity.cover_image ?? firstImage)) ??
     (await toBackgroundPng(settings.hero_image));
 
+  // 활동 제목은 카드 그림에 넣지 않습니다(제목은 공유 미리보기의 글자 부분에만 나옵니다).
+  // 그림에는 활동한 마을학교 이름(연합활동이면 연합회 이름)과 활동 날짜만 보여줍니다.
   const activity = result?.activity;
-  const label = activity?.schools
-    ? `${settings.association_name} · ${activity.schools.name}`
-    : settings.association_name;
+  const schoolName = activity?.schools?.name ?? null;
 
   return renderShareCard({
     bgSrc,
-    label,
-    title: activity?.title ?? settings.association_name,
-    subtitle: activity?.activity_date ?? (activity ? null : settings.association_slogan),
+    label: schoolName ? settings.association_name : null,
+    title: schoolName ?? settings.association_name,
+    subtitle: activity ? activity.activity_date : settings.association_slogan,
   });
 }
