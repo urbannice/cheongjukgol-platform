@@ -1,7 +1,7 @@
 import "server-only";
 import { createPublicClient } from "@/lib/supabase/publicClient";
 import { createAdminClient } from "@/lib/supabase/adminClient";
-import { createSignedViewUrl } from "@/lib/storage";
+import { mediaUrl } from "@/lib/mediaUrl";
 
 export interface SiteSettings {
   id: string;
@@ -114,42 +114,15 @@ export async function getSiteSettings(): Promise<
     updated_by: row.updated_by ?? null,
   };
 
-  const safeSignedUrl = async (path: string | null) => {
-    if (!path) return null;
-    try {
-      return await createSignedViewUrl(path);
-    } catch {
-      return null;
-    }
-  };
-
-  const [
-    logo_image_url,
-    hero_image_url,
-    about_image_url,
-    about_logo_image_url,
-    community_image_url,
-    org_logo_image_url,
-    org2_logo_image_url,
-  ] = await Promise.all([
-    safeSignedUrl(settings.logo_image),
-    safeSignedUrl(settings.hero_image),
-    safeSignedUrl(settings.about_image),
-    safeSignedUrl(settings.about_logo_image),
-    safeSignedUrl(settings.community_image),
-    safeSignedUrl(settings.org_logo_image),
-    safeSignedUrl(settings.org2_logo_image),
-  ]);
-
   return {
     ...settings,
-    logo_image_url,
-    hero_image_url,
-    about_image_url,
-    about_logo_image_url,
-    community_image_url,
-    org_logo_image_url,
-    org2_logo_image_url,
+    logo_image_url: mediaUrl(settings.logo_image),
+    hero_image_url: mediaUrl(settings.hero_image),
+    about_image_url: mediaUrl(settings.about_image),
+    about_logo_image_url: mediaUrl(settings.about_logo_image),
+    community_image_url: mediaUrl(settings.community_image),
+    org_logo_image_url: mediaUrl(settings.org_logo_image),
+    org2_logo_image_url: mediaUrl(settings.org2_logo_image),
   };
 }
 
