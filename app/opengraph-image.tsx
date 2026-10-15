@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
 import { getSiteSettings } from "@/lib/siteSettings";
+import { downloadMedia } from "@/lib/storage";
 
 // 카카오톡/문자/페이스북 등으로 사이트 링크를 공유했을 때 함께 보이는
 // 미리보기 이미지(오픈그래프 이미지)입니다. 관리자가 사이트 설정에서
@@ -29,14 +30,11 @@ export default async function Image() {
   // 만료되었을 때 미리보기 이미지까지 함께 깨질 수 있어, 여기서는 미리 그림으로 구워둡니다).
   // 원본이 webp 형식이면 미리보기 이미지 생성기가 읽지 못하므로 png로 바꿔줍니다.
   let logoSrc: string | null = null;
-  if (settings.logo_image_url) {
+  if (settings.logo_image) {
     try {
-      const res = await fetch(settings.logo_image_url);
-      if (res.ok) {
-        const buf = Buffer.from(await res.arrayBuffer());
-        const pngBuf = await sharp(buf).png().toBuffer();
-        logoSrc = `data:image/png;base64,${pngBuf.toString("base64")}`;
-      }
+      const buf = await downloadMedia(settings.logo_image);
+      const pngBuf = await sharp(buf).png().toBuffer();
+      logoSrc = `data:image/png;base64,${pngBuf.toString("base64")}`;
     } catch {
       logoSrc = null;
     }

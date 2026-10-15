@@ -1,6 +1,6 @@
 import "server-only";
 import { createPublicClient } from "@/lib/supabase/publicClient";
-import { createSignedViewUrls } from "@/lib/storage";
+import { mediaUrlMap } from "@/lib/mediaUrl";
 import type { Activity, ActivityCategory, MediaAsset, School, SchoolContactLink } from "@/lib/types";
 
 async function withSignedUrl<
@@ -16,7 +16,7 @@ async function withSignedUrl<
       (p): p is string => !!p
     )
   );
-  const signed = allPaths.length ? await createSignedViewUrls(allPaths) : {};
+  const signed = allPaths.length ? mediaUrlMap(allPaths) : {};
   return rows.map((r) => ({
     ...r,
     hero_image_url: r.hero_image ? signed[r.hero_image] ?? null : null,
@@ -160,7 +160,7 @@ export async function getPublishedActivities(params: {
 
   const rows = (data ?? []) as (Activity & { schools: { name: string; slug: string } | null })[];
   const paths = rows.map((r) => r.cover_image).filter((p): p is string => !!p);
-  const signed = paths.length ? await createSignedViewUrls(paths) : {};
+  const signed = paths.length ? mediaUrlMap(paths) : {};
   return rows.map((r) => ({
     ...r,
     cover_image_url: r.cover_image ? signed[r.cover_image] ?? null : null,
@@ -193,7 +193,7 @@ export async function getActivityById(id: string) {
     .flatMap((m) => [m.file_url, m.thumbnail_url])
     .concat(activityRow.cover_image ? [activityRow.cover_image] : [])
     .filter((p): p is string => !!p);
-  const signed = paths.length ? await createSignedViewUrls(paths) : {};
+  const signed = paths.length ? mediaUrlMap(paths) : {};
 
   const { data: participatingSchools } = await supabase
     .from("activity_schools")
@@ -265,7 +265,7 @@ export async function getSchoolMedia(schoolId: string) {
     .order("display_order", { ascending: true });
   const rows = (data ?? []) as MediaAsset[];
   const paths = rows.flatMap((r) => [r.file_url, r.thumbnail_url]).filter((p): p is string => !!p);
-  const signed = paths.length ? await createSignedViewUrls(paths) : {};
+  const signed = paths.length ? mediaUrlMap(paths) : {};
   return rows.map((r) => ({
     ...r,
     url: r.file_url ? signed[r.file_url] ?? null : r.external_url,

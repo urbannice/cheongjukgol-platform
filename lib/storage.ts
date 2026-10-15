@@ -61,6 +61,14 @@ export async function createSignedViewUrls(paths: string[], expiresInSeconds = 6
   return map;
 }
 
+// 서버 안에서 파일 내용을 직접 읽어야 할 때 씁니다 (예: 공유 미리보기 이미지에 사진을 그려 넣을 때).
+export async function downloadMedia(path: string) {
+  const supabase = createAdminClient();
+  const { data, error } = await supabase.storage.from(BUCKET).download(path);
+  if (error) throw error;
+  return Buffer.from(await data.arrayBuffer());
+}
+
 export async function deleteStorageObject(path: string) {
   const supabase = createAdminClient();
   await supabase.storage.from(BUCKET).remove([path]);
