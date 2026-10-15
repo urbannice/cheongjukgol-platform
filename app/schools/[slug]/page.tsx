@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import {
@@ -8,8 +9,24 @@ import {
   getSchoolMedia,
 } from "@/lib/publicData";
 import { buildMapSearchUrl } from "@/lib/maps";
+import { getSiteSettings } from "@/lib/siteSettings";
 import { SCHOOL_CONTACT_LINK_LABEL } from "@/lib/types";
 import GalleryLightbox from "@/components/GalleryLightbox";
+
+// 링크를 공유했을 때 미리보기에 학교 이름과 한줄 소개가 보이도록 제목·설명을 정합니다.
+// (미리보기 사진은 같은 폴더의 opengraph-image.tsx가 만듭니다)
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const [school, settings] = await Promise.all([getSchoolBySlug(slug), getSiteSettings()]);
+  if (!school) return {};
+  const title = `${school.name} | ${settings.association_name}`;
+  const description = school.short_description ?? settings.association_slogan;
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function SchoolDetailPage({
   params,
