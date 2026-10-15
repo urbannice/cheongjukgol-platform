@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getActivityById } from "@/lib/publicData";
@@ -6,6 +7,24 @@ import { ACTIVITY_CATEGORY_LABEL, MEDIA_CATEGORY_LABEL } from "@/lib/types";
 import GalleryLightbox from "@/components/GalleryLightbox";
 
 export const revalidate = 60;
+
+// 링크를 공유했을 때 미리보기에 활동 제목이 보이도록 제목·설명을 정합니다.
+// (미리보기 사진은 같은 폴더의 opengraph-image.tsx가 만듭니다)
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const [result, settings] = await Promise.all([getActivityById(id), getSiteSettings()]);
+  if (!result) return {};
+  const { activity } = result;
+  const title = `${activity.title} | ${settings.association_name}`;
+  const who = activity.schools?.name ?? settings.association_name;
+  const summary = activity.description?.replace(/\s+/g, " ").trim().slice(0, 100);
+  const description = summary || [who, activity.activity_date].filter(Boolean).join(" · ");
+  return { title, description, openGraph: { title, description } };
+}
 
 export default async function ActivityDetailPage({
   params,
