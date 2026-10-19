@@ -22,6 +22,12 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
     },
+    // 검색 등록(네이버 서치어드바이저) 사이트 소유확인용 태그입니다. 지우면 소유확인이 풀릴 수 있습니다.
+    verification: {
+      other: {
+        "naver-site-verification": "8e7b7001b54032fa33ca74c2b552f0ef81f1d3e8",
+      },
+    },
   };
 }
 

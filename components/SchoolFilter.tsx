@@ -19,7 +19,7 @@ export default function SchoolFilter({
 
   return (
     <select
-      defaultValue={selected ?? ""}
+      value={selected ?? ""}
       onChange={(e) => {
         const params = new URLSearchParams();
         if (category) params.set("category", category);

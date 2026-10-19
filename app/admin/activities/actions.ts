@@ -75,6 +75,8 @@ export async function createActivityAction(formData: FormData) {
   revalidatePath("/admin/activities");
   revalidatePath("/admin/community");
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/community");
   revalidatePath("/");
   redirect(`/admin/activities/${data.id}`);
@@ -147,6 +149,8 @@ export async function updateActivityAction(activityId: string, formData: FormDat
   revalidatePath("/admin/community");
   revalidatePath(`/admin/activities/${activityId}`);
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/community");
   revalidatePath("/");
   return { success: true };
@@ -192,6 +196,8 @@ export async function setActivityCoverAction(activityId: string, filePath: strin
   });
   revalidatePath(`/admin/activities/${activityId}`);
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/community");
   revalidatePath("/");
 }
@@ -212,6 +218,8 @@ export async function softDeleteActivityAction(activityId: string) {
   revalidatePath("/admin/activities");
   revalidatePath("/admin/community");
   revalidatePath("/activities");
+  revalidatePath("/activities/[id]", "page");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/community");
   revalidatePath("/");
 }

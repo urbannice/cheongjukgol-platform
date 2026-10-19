@@ -70,6 +70,7 @@ export async function createSchoolAction(formData: FormData) {
 
   revalidatePath("/admin/schools");
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/contact");
   revalidatePath("/");
   redirect(`/admin/schools/${data.id}`);
@@ -163,6 +164,7 @@ export async function updateSchoolAction(schoolId: string, formData: FormData) {
   revalidatePath("/admin/schools");
   revalidatePath(`/admin/schools/${schoolId}`);
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath(`/schools/${before?.slug}`);
   revalidatePath("/contact");
   revalidatePath("/");
@@ -197,6 +199,7 @@ export async function updateSchoolImageAction(
   });
   revalidatePath(`/admin/schools/${schoolId}`);
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/contact");
 }
 
@@ -216,6 +219,7 @@ export async function updateSchoolHeroImageAction(schoolId: string, storagePath:
   });
   revalidatePath(`/admin/schools/${schoolId}`);
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/contact");
   revalidatePath("/");
 }
@@ -235,6 +239,7 @@ export async function toggleSchoolVisibilityAction(schoolId: string, isVisible: 
   });
   revalidatePath("/admin/schools");
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/contact");
   revalidatePath("/");
 }
@@ -256,6 +261,7 @@ export async function updateSchoolStatusAction(schoolId: string, status: "active
   });
   revalidatePath("/admin/schools");
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/contact");
   revalidatePath("/");
 }
@@ -289,6 +295,7 @@ export async function reorderSchoolAction(schoolId: string, direction: "up" | "d
 
   revalidatePath("/admin/schools");
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/contact");
   revalidatePath("/");
 }
@@ -311,6 +318,7 @@ export async function softDeleteSchoolAction(schoolId: string) {
   });
   revalidatePath("/admin/schools");
   revalidatePath("/schools");
+  revalidatePath("/schools/[slug]", "page");
   revalidatePath("/contact");
   revalidatePath("/");
 }
