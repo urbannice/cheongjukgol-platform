@@ -1,6 +1,13 @@
+import type { Metadata } from "next";
 import { getSiteSettings } from "@/lib/siteSettings";
 
 export const revalidate = 60;
+
+// 검색 결과와 브라우저 탭에 보이는 제목·설명입니다. (제목 뒤에 연합회 이름이 자동으로 붙습니다)
+export const metadata: Metadata = {
+  title: "소개",
+  description: "담양 지역 마을학교들이 함께 만든 마을교육공동체, 담양마을학교 연합회(청죽골마을교육공동체)를 소개합니다.",
+};
 
 export default async function AboutPage() {
   const settings = await getSiteSettings();

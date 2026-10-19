@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getPublishedActivities, getVisibleSchools } from "@/lib/publicData";
 import { getSiteSettings } from "@/lib/siteSettings";
@@ -6,6 +7,12 @@ import { ActivityBrowser, ActivityBrowserFromUrl, type ActivityBrowserItem } fro
 // 공개된 활동 전체를 미리 만들어 두고(60초마다 갱신), 분류·연도·학교 필터는 화면 안에서 처리합니다.
 // 그래서 필터를 바꿔도 서버를 다시 거치지 않아 빠르게 바뀝니다.
 export const revalidate = 60;
+
+// 검색 결과와 브라우저 탭에 보이는 제목·설명입니다. (제목 뒤에 연합회 이름이 자동으로 붙습니다)
+export const metadata: Metadata = {
+  title: "전체활동",
+  description: "담양 마을학교들의 활동과 연합활동 기록을 한곳에서 모아 봅니다.",
+};
 
 export default async function ActivitiesPage() {
   const [activities, schools, settings] = await Promise.all([

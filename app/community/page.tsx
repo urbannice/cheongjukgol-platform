@@ -1,9 +1,16 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getPublishedActivities } from "@/lib/publicData";
 import { getSiteSettings } from "@/lib/siteSettings";
 import { ACTIVITY_CATEGORY_LABEL } from "@/lib/types";
 
 export const revalidate = 60;
+
+// 검색 결과와 브라우저 탭에 보이는 제목·설명입니다. (제목 뒤에 연합회 이름이 자동으로 붙습니다)
+export const metadata: Metadata = {
+  title: "연합활동",
+  description: "담양마을학교 연합회가 함께 만드는 공동활동과 역량강화 네트워크 활동입니다.",
+};
 
 export default async function CommunityPage() {
   const [settings, jointPrograms, networkActivities] = await Promise.all([

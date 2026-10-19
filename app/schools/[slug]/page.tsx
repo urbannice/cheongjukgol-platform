@@ -23,9 +23,12 @@ export async function generateMetadata({
   const { slug } = await params;
   const [school, settings] = await Promise.all([getSchoolBySlug(slug), getSiteSettings()]);
   if (!school) return {};
-  const title = `${school.name} | ${settings.association_name}`;
   const description = school.short_description ?? settings.association_slogan;
-  return { title, description, openGraph: { title, description } };
+  return {
+    title: school.name,
+    description,
+    openGraph: { title: `${school.name} | ${settings.association_name}`, description },
+  };
 }
 
 // 학교 페이지는 처음 방문할 때 한 번 만들어 저장해 두고, 60초마다 새 내용으로 갱신합니다.
