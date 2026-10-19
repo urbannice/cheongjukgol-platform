@@ -1,7 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getVisibleSchools } from "@/lib/publicData";
 
 export const revalidate = 60;
+
+// 검색 결과와 브라우저 탭에 보이는 제목·설명입니다. (제목 뒤에 연합회 이름이 자동으로 붙습니다)
+export const metadata: Metadata = {
+  title: "마을학교",
+  description: "담양마을학교 연합회에 함께하는 담양 지역 마을학교들을 소개합니다.",
+};
 
 export default async function SchoolsPage() {
   const schools = await getVisibleSchools();

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getContactDirectory } from "@/lib/publicData";
 import { getSiteSettings } from "@/lib/siteSettings";
@@ -5,6 +6,12 @@ import { buildMapSearchUrl } from "@/lib/maps";
 import { SCHOOL_CONTACT_LINK_LABEL } from "@/lib/types";
 
 export const revalidate = 60;
+
+// 검색 결과와 브라우저 탭에 보이는 제목·설명입니다. (제목 뒤에 연합회 이름이 자동으로 붙습니다)
+export const metadata: Metadata = {
+  title: "연락하기",
+  description: "담양 지역 마을학교별 연락처와 위치 안내입니다.",
+};
 
 export default async function ContactPage() {
   const [schools, settings] = await Promise.all([getContactDirectory(), getSiteSettings()]);

@@ -25,11 +25,14 @@ export async function generateMetadata({
   const [result, settings] = await Promise.all([getActivityById(id), getSiteSettings()]);
   if (!result) return {};
   const { activity } = result;
-  const title = `${activity.title} | ${settings.association_name}`;
   const who = activity.schools?.name ?? settings.association_name;
   const summary = activity.description?.replace(/\s+/g, " ").trim().slice(0, 100);
   const description = summary || [who, activity.activity_date].filter(Boolean).join(" · ");
-  return { title, description, openGraph: { title, description } };
+  return {
+    title: activity.title,
+    description,
+    openGraph: { title: `${activity.title} | ${settings.association_name}`, description },
+  };
 }
 
 export default async function ActivityDetailPage({

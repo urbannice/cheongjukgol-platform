@@ -16,7 +16,8 @@ export async function generateMetadata(): Promise<Metadata> {
     "담양 지역 마을학교의 활동과 사람, 프로그램을 연결하는 담양마을학교 연합회입니다.";
   return {
     metadataBase: new URL(resolveSiteBaseUrl(settings.site_base_url)),
-    title,
+    // 각 페이지 제목 뒤에 연합회 이름이 붙습니다. 예: "마을학교 | 담양마을학교 연합회" (검색 결과에 보이는 제목)
+    title: { default: title, template: `%s | ${title}` },
     description,
     openGraph: {
       title,
