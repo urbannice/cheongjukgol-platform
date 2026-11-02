@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CallButton from "@/components/CallButton";
 import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 import {
@@ -110,11 +111,7 @@ export default async function SchoolDetailPage({ params }: { params: Promise<{ s
           {school.show_phone && school.phone && (
             <InfoItem
               label="연락처"
-              value={
-                <a href={`tel:${school.phone.replace(/[^0-9+]/g, "")}`} className="underline underline-offset-2">
-                  {school.phone}
-                </a>
-              }
+              value={<CallButton phone={school.phone} schoolName={school.name} className="mt-1" />}
             />
           )}
         </div>
