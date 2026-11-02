@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CallButton from "@/components/CallButton";
 import { getContactDirectory } from "@/lib/publicData";
 import { getSiteSettings } from "@/lib/siteSettings";
 import { buildMapSearchUrl } from "@/lib/maps";
@@ -53,18 +54,12 @@ export default async function ContactPage() {
 
                   <div className="mt-3 space-y-2 text-sm">
                     {school.show_phone && school.phone && (
-                      <ContactRow
-                        label={school.phone}
-                        href={`tel:${school.phone.replace(/[^0-9+]/g, "")}`}
-                        icon="phone"
-                        actionLabel="전화하기"
-                      />
+                      <CallButton phone={school.phone} schoolName={school.name} />
                     )}
                     {school.show_email && school.email && (
                       <ContactRow
                         label={school.email}
                         href={`mailto:${school.email}`}
-                        icon="mail"
                         actionLabel="메일 보내기"
                       />
                     )}
@@ -122,12 +117,10 @@ export default async function ContactPage() {
 function ContactRow({
   label,
   href,
-  icon,
   actionLabel,
 }: {
   label: string;
   href: string;
-  icon: "phone" | "mail";
   actionLabel: string;
 }) {
   return (
@@ -141,17 +134,9 @@ function ContactRow({
         title={actionLabel}
         className="flex-shrink-0 w-9 h-9 rounded-full border border-[var(--color-border)] flex items-center justify-center text-[var(--color-primary)] hover:bg-[var(--color-surface)] transition-colors"
       >
-        {icon === "phone" ? <PhoneIcon /> : <MailIcon />}
+        <MailIcon />
       </a>
     </div>
-  );
-}
-
-function PhoneIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-    </svg>
   );
 }
 
